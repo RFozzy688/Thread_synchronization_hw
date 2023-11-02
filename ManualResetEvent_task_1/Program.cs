@@ -28,6 +28,10 @@ namespace ManualResetEvent_task_1
             Thread sumNumbersThread = new Thread(parameterThread1);
             sumNumbersThread.Start("sumNumbers.txt");
 
+            ParameterizedThreadStart parameterThread2 = new ParameterizedThreadStart(pr.MultiplyNumbersThread);
+            Thread multiplyNumbersThread = new Thread(parameterThread2);
+            multiplyNumbersThread.Start("multiplyNumbers.txt");
+
             Console.ReadLine();
         }
         void GenerateSaveNumbersThread()
@@ -72,6 +76,27 @@ namespace ManualResetEvent_task_1
             for (int i = 0; i < _arrNumbers.GetLength(0); i++)
             {
                 arrSum[i] = _arrNumbers[i, 0] + _arrNumbers[i, 1];
+            }
+
+            SaveNumbers(path, arrSum);
+
+            _autoReset.Reset();
+            _autoReset.Set();
+        }
+        void MultiplyNumbersThread(object obj)
+        {
+            _autoReset.WaitOne();
+
+            string path = obj as string;
+
+            Array.Clear(_arrNumbers, 0, 10);
+            LoadNumbers();
+
+            int[] arrSum = new int[5];
+
+            for (int i = 0; i < _arrNumbers.GetLength(0); i++)
+            {
+                arrSum[i] = _arrNumbers[i, 0] * _arrNumbers[i, 1];
             }
 
             SaveNumbers(path, arrSum);
