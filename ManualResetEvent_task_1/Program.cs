@@ -10,11 +10,7 @@ namespace ManualResetEvent_task_1
 {
     internal class Program
     {
-        string _pathMultiplyNumbers = "multiplyNumbers.txt";
         int[,] _arrNumbers = new int[5, 2];
-        Thread _generateNumbersThread;
-        Thread _sumNumbersThread;
-        Thread _multiplyNumbersThread;
         AutoResetEvent _autoReset = new AutoResetEvent(true);
         static void Main(string[] args)
         {
