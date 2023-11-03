@@ -13,7 +13,8 @@ namespace Mutex_task_3_4
         static void Main(string[] args)
         {
             PrimeNumber pn = new PrimeNumber();
-            pn.GenerateNumber();
+            //pn.GenerateNumber();
+            pn.SearchForPrimeNumbers();
         }
     }
     public class PrimeNumber
@@ -34,6 +35,32 @@ namespace Mutex_task_3_4
             }
 
             SaveToFile("numbers.txt");
+
+            _mutex.ReleaseMutex();
+        }
+        public void SearchForPrimeNumbers()
+        {
+            _mutex.WaitOne();
+
+            _numbers.Clear();
+
+            using (FileStream fs = new FileStream("numbers.txt", FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    while (!sr.EndOfStream) 
+                    {
+                        int num = Int32.Parse(sr.ReadLine());
+
+                        if (IsPrimeNumber(num))
+                        {
+                            _numbers.Add(num);
+                        }
+                    }
+                }
+            }
+
+            SaveToFile("primeNumbers.txt");
 
             _mutex.ReleaseMutex();
         }
@@ -61,5 +88,6 @@ namespace Mutex_task_3_4
                 }
             }
         }
+
     }
 }
