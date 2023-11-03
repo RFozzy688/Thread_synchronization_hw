@@ -13,8 +13,16 @@ namespace Mutex_task_3_4
         static void Main(string[] args)
         {
             PrimeNumber pn = new PrimeNumber();
-            //pn.GenerateNumber();
-            pn.SearchForPrimeNumbers();
+
+            ThreadStart threadStart1 = new ThreadStart(pn.GenerateNumber);
+            Thread generateNumberThread = new Thread(threadStart1);
+            generateNumberThread.Start();
+
+            ThreadStart threadStart2 = new ThreadStart(pn.SearchForPrimeNumbers);
+            Thread searchForPrimeNumbersThread = new Thread(threadStart2);
+            searchForPrimeNumbersThread.Start();
+
+            Console.ReadLine();
         }
     }
     public class PrimeNumber
@@ -23,11 +31,11 @@ namespace Mutex_task_3_4
         List<int> _numbers = new List<int>();
         public void GenerateNumber()
         {
+            _mutex.WaitOne();
+
             Console.WriteLine("Генерация и сохранение чисел в файл");
 
             Random random = new Random();
-
-            _mutex.WaitOne();
 
             for (int i = 0; i < 10000; i++)
             {
@@ -41,6 +49,8 @@ namespace Mutex_task_3_4
         public void SearchForPrimeNumbers()
         {
             _mutex.WaitOne();
+
+            Console.WriteLine("Поиск простых чисел");
 
             _numbers.Clear();
 
