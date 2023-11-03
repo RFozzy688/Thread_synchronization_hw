@@ -19,6 +19,7 @@ namespace ManualResetEvent_task_1
             ThreadStart threadStart = new ThreadStart(pr.GenerateSaveNumbersThread);
             Thread generateNumbersThread = new Thread(threadStart);
             generateNumbersThread.Start();
+            generateNumbersThread.Join();
 
             ParameterizedThreadStart parameterThread1 = new ParameterizedThreadStart(pr.SumNumbersThread);
             Thread sumNumbersThread = new Thread(parameterThread1);
@@ -27,8 +28,6 @@ namespace ManualResetEvent_task_1
             ParameterizedThreadStart parameterThread2 = new ParameterizedThreadStart(pr.MultiplyNumbersThread);
             Thread multiplyNumbersThread = new Thread(parameterThread2);
             multiplyNumbersThread.Start("multiplyNumbers.txt");
-
-            Console.ReadLine();
         }
         void GenerateSaveNumbersThread()
         {
