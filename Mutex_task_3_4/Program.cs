@@ -17,22 +17,29 @@ namespace Mutex_task_3_4
             ThreadStart threadStart1 = new ThreadStart(pn.GenerateNumber);
             Thread generateNumberThread = new Thread(threadStart1);
             generateNumberThread.Start();
+            generateNumberThread.Join();
 
             ThreadStart threadStart2 = new ThreadStart(pn.SearchForPrimeNumbers);
             Thread searchForPrimeNumbersThread = new Thread(threadStart2);
             searchForPrimeNumbersThread.Start();
+            searchForPrimeNumbersThread.Join();
 
             ThreadStart threadStart3 = new ThreadStart(pn.PrimeNumberEndingSeven);
             Thread primeNumberEndingSevenThread = new Thread(threadStart3);
             primeNumberEndingSevenThread.Start();
+            primeNumberEndingSevenThread.Join();
 
-            Console.ReadLine();
+            ThreadStart threadStart4 = new ThreadStart(pn.Report);
+            Thread reportThread = new Thread(threadStart4);
+            reportThread.Start();
+            reportThread.Join();
         }
     }
     public class PrimeNumber
     {
         Mutex _mutex = new Mutex();
         List<int> _numbers = new List<int>();
+
         public void GenerateNumber()
         {
             _mutex.WaitOne();
@@ -103,6 +110,50 @@ namespace Mutex_task_3_4
             }
 
             SaveToFile("primeNumbersEnding7.txt");
+
+            _mutex.ReleaseMutex();
+        }
+        public void Report()
+        {
+            _mutex.WaitOne();
+
+            string[] path = { "numbers.txt", "primeNumbers.txt", "primeNumbersEnding7.txt" };
+
+            Console.WriteLine("Отчет");
+
+            using (FileStream fs = new FileStream("report.txt", FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    for (int i = 0; i < path.Length; i++)
+                    {
+                        _numbers.Clear();
+
+                        using (FileStream fs2 = new FileStream(path[i], FileMode.Open))
+                        {
+                            using (StreamReader sr = new StreamReader(fs2))
+                            {
+                                while (!sr.EndOfStream)
+                                {
+                                    _numbers.Add(Int32.Parse(sr.ReadLine()));
+                                }
+                            }
+                        }
+
+                        FileInfo fileInfo = new FileInfo(path[i]);
+                        sw.WriteLine(fileInfo.Name);
+                        sw.WriteLine($"Количество чисел: {_numbers.Count}");
+                        sw.WriteLine($"Размер файла: {fileInfo.Length} байт\n");
+
+                        for (int j = 0; j < _numbers.Count; j++)
+                        {
+                            sw.WriteLine(_numbers[j]);
+                        }
+
+                        sw.WriteLine("================================\n");
+                    }
+                }
+            }
 
             _mutex.ReleaseMutex();
         }
