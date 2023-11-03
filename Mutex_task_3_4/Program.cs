@@ -22,6 +22,9 @@ namespace Mutex_task_3_4
             Thread searchForPrimeNumbersThread = new Thread(threadStart2);
             searchForPrimeNumbersThread.Start();
 
+            ThreadStart threadStart3 = new ThreadStart(pn.PrimeNumberEndingSeven);
+            Thread primeNumberEndingSevenThread = new Thread(threadStart3);
+            primeNumberEndingSevenThread.Start();
 
             Console.ReadLine();
         }
@@ -89,9 +92,9 @@ namespace Mutex_task_3_4
                 {
                     while (!sr.EndOfStream)
                     {
-                        int num = Int32.Parse(sr.ReadLine()) % 10;
+                        int num = Int32.Parse(sr.ReadLine());
 
-                        if (num == 7)
+                        if (num % 10 == 7)
                         {
                             _numbers.Add(num);
                         }
