@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mutex_task_3_4
@@ -17,9 +18,14 @@ namespace Mutex_task_3_4
     }
     public class PrimeNumber
     {
+        Mutex mutex = new Mutex();
         public void GenerateNumber()
         {
+            Console.WriteLine("Генерация и сохранение чисел в файл");
+
             Random random = new Random();
+
+            mutex.WaitOne();
 
             using (FileStream fs = new FileStream("numbers.txt", FileMode.Create))
             {
@@ -31,6 +37,8 @@ namespace Mutex_task_3_4
                     }
                 }
             }
+
+            mutex.ReleaseMutex();
         }
     }
 }
