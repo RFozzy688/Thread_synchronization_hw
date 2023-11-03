@@ -17,7 +17,6 @@ namespace Mutex_task_3_4
             ThreadStart threadStart1 = new ThreadStart(pn.GenerateNumber);
             Thread generateNumberThread = new Thread(threadStart1);
             generateNumberThread.Start();
-            generateNumberThread.Join();
 
             ThreadStart threadStart2 = new ThreadStart(pn.SearchForPrimeNumbers);
             Thread searchForPrimeNumbersThread = new Thread(threadStart2);
@@ -87,7 +86,7 @@ namespace Mutex_task_3_4
         }
         public void PrimeNumberEndingSeven()
         {
-            _mutex.WaitOne();
+            //_mutex.WaitOne();
 
             Console.WriteLine("Поиск простых чисел оканчивающихся на 7");
 
@@ -111,11 +110,11 @@ namespace Mutex_task_3_4
 
             SaveToFile("primeNumbersEnding7.txt");
 
-            _mutex.ReleaseMutex();
+            //_mutex.ReleaseMutex();
         }
         public void Report()
         {
-            _mutex.WaitOne();
+            //_mutex.WaitOne();
 
             string[] path = { "numbers.txt", "primeNumbers.txt", "primeNumbersEnding7.txt" };
 
@@ -155,7 +154,7 @@ namespace Mutex_task_3_4
                 }
             }
 
-            _mutex.ReleaseMutex();
+            //_mutex.ReleaseMutex();
         }
         bool IsPrimeNumber(int x)
         {
