@@ -22,6 +22,7 @@ namespace Mutex_task_3_4
             Thread searchForPrimeNumbersThread = new Thread(threadStart2);
             searchForPrimeNumbersThread.Start();
 
+
             Console.ReadLine();
         }
     }
@@ -71,6 +72,34 @@ namespace Mutex_task_3_4
             }
 
             SaveToFile("primeNumbers.txt");
+
+            _mutex.ReleaseMutex();
+        }
+        public void PrimeNumberEndingSeven()
+        {
+            _mutex.WaitOne();
+
+            Console.WriteLine("Поиск простых чисел оканчивающихся на 7");
+
+            _numbers.Clear();
+
+            using (FileStream fs = new FileStream("primeNumbers.txt", FileMode.Open))
+            {
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        int num = Int32.Parse(sr.ReadLine()) % 10;
+
+                        if (num == 7)
+                        {
+                            _numbers.Add(num);
+                        }
+                    }
+                }
+            }
+
+            SaveToFile("primeNumbersEnding7.txt");
 
             _mutex.ReleaseMutex();
         }
