@@ -18,27 +18,48 @@ namespace Mutex_task_3_4
     }
     public class PrimeNumber
     {
-        Mutex mutex = new Mutex();
+        Mutex _mutex = new Mutex();
+        List<int> _numbers = new List<int>();
         public void GenerateNumber()
         {
             Console.WriteLine("Генерация и сохранение чисел в файл");
 
             Random random = new Random();
 
-            mutex.WaitOne();
+            _mutex.WaitOne();
 
-            using (FileStream fs = new FileStream("numbers.txt", FileMode.Create))
+            for (int i = 0; i < 10000; i++)
+            {
+                _numbers.Add(random.Next());
+            }
+
+            SaveToFile("numbers.txt");
+
+            _mutex.ReleaseMutex();
+        }
+        bool IsPrimeNumber(int x)
+        {
+            for (int d = 2; d <= Math.Sqrt(x); d++)
+            {
+                if (x % d == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        void SaveToFile(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    for (int i = 0; i < 10000; i++)
+                    for (int i = 0; i < _numbers.Count; i++)
                     {
-                        sw.WriteLine(random.Next());
+                        sw.WriteLine(_numbers[i]);
                     }
                 }
             }
-
-            mutex.ReleaseMutex();
         }
     }
 }
